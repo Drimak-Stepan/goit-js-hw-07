@@ -17,63 +17,28 @@ import { galleryItems } from './gallery-items.js';
 
 console.log(galleryItems);
 
+const refDivGallery = document.querySelector(".gallery");
+const newGalleryMarkup = createMarkup(galleryItems); 
 
+function createMarkup(gallery){
+    return gallery.map(({preview, original,description}) => {
+        return `
+            <li>
+                <a class="gallery__item" href="${original}"">
+                    <img
+                    class="gallery__image"
+                    src="${preview}"
+                    alt="${description}"
+                    />
+                </a>
+            </li>`;}).join("");};
 
+refDivGallery.innerHTML = newGalleryMarkup;
 
+// refDivGallery.addEventListener("click", onImgClick);
+// function onImgClick(e) {
+//     e.preventDefault();};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const imgContainer = document.querySelector('.gallery');
-// const imgMarkup = createImgMarkup(galleryItems);
-
-// imgContainer.insertAdjacentHTML('beforeend', imgMarkup);
-
-// imgContainer.addEventListener('click', onImgContainerClick);
-
-// function createImgMarkup(gallery) {
-//   return gallery
-//     .map(({ preview, original, description }) => {
-//       return `
-//     <li>
-//         <a class="gallery__item" href="${original}"">
-//             <img
-//             class="gallery__image"
-//             src="${preview}"
-//             alt="${description}"
-//             />
-//         </a>
-//     </li>`;
-//     })
-//     .join('');
-// }
-
-// var lightbox = new SimpleLightbox('.gallery a', {
-//   captionsData: 'alt',
-//   captionDelay: 250,
-// });
-
-// function onImgContainerClick(evt) {
-//   evt.preventDefault();}
+var lightbox = new SimpleLightbox('.gallery a', {
+        captionsData: 'alt',
+        captionDelay: 250,});
