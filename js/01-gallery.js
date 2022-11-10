@@ -1,9 +1,9 @@
-// Виконуй це завдання у файлах 01-gallery.html і 01-gallery.js. 
-// Розбий його на декілька підзавдань:
+   // Виконуй це завдання у файлах 01-gallery.html і 01-gallery.js. 
+                 // Розбий його на декілька підзавдань:
 // Створення і рендер розмітки на підставі масиву даних galleryItems і наданого шаблону елемента галереї.
 // Реалізація делегування на div.gallery і отримання url великого зображення.
-// Підключення скрипту і стилів бібліотеки модального вікна basicLightbox. 
-// Використовуй CDN сервіс jsdelivr і додай у проект посилання на мініфіковані (.min) файли бібліотеки.
+   // Підключення скрипту і стилів бібліотеки модального вікна basicLightbox. 
+   // Використовуй CDN сервіс jsdelivr і додай у проект посилання на мініфіковані (.min) файли бібліотеки.
 // Відкриття модального вікна по кліку на елементі галереї. 
 // Для цього ознайомся з документацією і прикладами.
 // Заміна значення атрибута src елемента <img> в модальному вікні перед відкриттям. 
@@ -12,25 +12,12 @@
 // Посилання на оригінальне зображення повинно зберігатися в data-атрибуті source на елементі <img>,
 //  і вказуватися в href посилання. Не додавай інші HTML теги або CSS класи, крім тих, 
 //  що містяться в цьому шаблоні.
-
-// <div class="gallery__item">
-//   <a class="gallery__link" href="large-image.jpg">
-//     <img
-//       class="gallery__image"
-//       src="small-image.jpg"
-//       data-source="large-image.jpg"
-//       alt="Image description"
-//     />
-//   </a>
-// </div>
-
 // Зверни увагу на те, що зображення обгорнуте посиланням, 
 // отже по кліку за замовчуванням користувач буде перенаправлений на іншу сторінку. 
 // Заборони цю поведінку за замовчуванням.
 // Закриття з клавіатури
 // Додай закриття модального вікна після натискання клавіші Escape. 
 // Зроби так, щоб прослуховування клавіатури було тільки доти, доки відкрите модальне вікно. 
-// Бібліотека basicLightbox містить метод для програмного закриття модального вікна.
 
 
 
@@ -39,68 +26,43 @@ import { galleryItems } from './gallery-items.js';
 
 console.log(galleryItems);
 
+const refDivGallery = document.querySelector(".gallery");
+const newGalleryMarkup = createMarkup(galleryItems); 
 
+function createMarkup(gallery){
+    return gallery.map(({preview, original,description}) => {
+        return `
+        <div class="gallery__item">
+            <a class="gallery__link" href="${original}">
+                <img
+                class="gallery__image"
+                src="${preview}"
+                data-source="${original}"
+                alt="${description}"    />
+            </a>
+        </div>`;}).join("");};
 
+refDivGallery.innerHTML = newGalleryMarkup;
 
+refDivGallery.addEventListener("click", onImgClick);
 
+function onImgClick(e) {
+    e.preventDefault();
 
+    const isImg = e.target.classList.contains("gallery__image");
 
+    if (!isImg) {
+        return; }
 
+    const instance = basicLightbox.create(`
+        <img src="${e.target.dataset.source}" width="800" height="600">`);
 
+    instance.show(() => {
+        document.addEventListener("keydown", onEscPush);    });
 
-
-
-
-
-
-
-// const imgContainer = document.querySelector('.gallery');
-// const imgMarkup = createImgMarkup(galleryItems);
-
-// imgContainer.insertAdjacentHTML('beforeend', imgMarkup);
-
-// imgContainer.addEventListener('click', onImgContainerClick);
-
-// function createImgMarkup(gallery) {
-//   return gallery
-//     .map(({ preview, original, description }) => {
-//       return `
-//     <div class="gallery__item">
-//         <a class="gallery__link" href="${original}"">
-//             <img
-//             class="gallery__image"
-//             src="${preview}"
-//             data-source="${original}"
-//             alt="${description}"
-//             />
-//         </a>
-//     </div>`;
-//     })
-//     .join('');
-// }
-
-// function onImgContainerClick(evt) {
-//   evt.preventDefault();
-//   const isImgEl = evt.target.classList.contains('gallery__image');
-
-//   if (!isImgEl) {
-//     return;
-//   }
-
-//   const instance = basicLightbox.create(`
-//     <img src='${evt.target.dataset.source}' width="800" height="600">
-// `);
-
-//   instance.show(() => {
-//     window.addEventListener('keydown', onEscKeyPress);
-//   });
-
-//   function onEscKeyPress(evt) {
-//     if (evt.code === 'Escape') {
-//       instance.close(() => {
-//         window.removeEventListener('keydown', onEscKeyPress);
-//       });
-//       console.log(evt.code);
-//     }
-//   }
-// }
+    function onEscPush(e) {
+        if (e.code === "Escape") {
+        instance.close(() => {
+            document.removeEventListener("keydown", onEscPush);
+        });
+        }}}
